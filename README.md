@@ -1,28 +1,58 @@
-# No ZK Proof KYC
+# NoZKProofKYC
 
-A simple decentralized KYC (Know Your Customer) system built on Ethereum using Solidity. This version does **not** implement Zero-Knowledge Proofs, focusing instead on basic hashed identity storage and verification mechanisms. It serves as a foundational prototype for understanding how KYC data can be securely stored and accessed on-chain in a permissioned manner.
+A decentralized Know Your Customer (KYC) system built on Ethereum. This smart contract enables users to request KYC, and authorized verifiers to approve, reject, or revoke KYC status. It does not use Zero-Knowledge Proofs and demonstrates a basic on-chain identity verification flow.
 
----
+## 🔍 Features
+
+- On-chain KYC request and verification
+- Role-based access (Owner, Verifier, User)
+- Event logs for all actions
+- Public KYC status visibility
 
 ## 🛠 Tech Stack
 
-- **Smart Contract:** Solidity, Hardhat  
-- **Frontend:** HTML, CSS, JavaScript (vanilla)  
-- **Blockchain Network:** Ethereum (via Alchemy RPC)  
-- **Security:** Hashing using `keccak256` for identity obfuscation  
-- **Tools:** MetaMask, Hardhat, Ethers.js
+- Solidity
+- Hardhat (recommended for testing and deployment)
+- OpenZeppelin (for ownership and access control)
 
----
+## 🧱 Contract Roles
 
-## 🚀 Features
+- **Owner**: Can add or remove verifiers.
+- **Verifier**: Can approve, reject, or revoke KYC requests.
+- **User**: Any wallet address that can submit a KYC request.
 
-- Users can register themselves for KYC by submitting their name, age, and a hashed ID.
-- Verifiers can approve or reject KYC requests.
-- Only authorized verifiers can access or approve user KYC.
-- Simple, minimal frontend for interaction with smart contract.
-- No off-chain storage — everything is handled on-chain (except for user-facing UI).
+## 🔄 KYC Workflow
 
----
+1. `Unverified` – Default status for all users
+2. `Pending` – After a user requests KYC
+3. `Verified` – After a verifier approves the request
+4. `Rejected` – After a verifier rejects the request
+5. `Unverified` – If a verified user’s KYC is revoked
 
-## 📁 Project Structure
+## 🔧 Functions
 
+### Users
+
+- `requestKYC(string name, uint8 age, string userId)`
+  - Request KYC verification
+
+### Verifiers (Only Verifier)
+
+- `approveKYC(address user)`
+- `rejectKYC(address user, string reason)`
+- `revokeKYC(address user)`
+
+### Owner
+
+- `addVerifier(address verifier)`
+- `removeVerifier(address verifier)`
+
+### View Functions
+
+- `getUserInfo(address user) → (string name, uint8 age, KYCStatus)`
+- `isUserVerified(address user) → bool`
+- `isVerifier(address verifier) → bool`
+
+## 📄 License
+
+MIT
